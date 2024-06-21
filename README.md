@@ -3,6 +3,9 @@
 
 This Salesforce Lightning component fetches and displays economic data for multiple countries using the World Bank API. The data includes GDP, unemployment rate, inflation rate, and population for each country.
 
+![image](https://github.com/SYRE33/Economics-Tracking-Platform/assets/117843723/482fe2b5-0b95-41bd-bc65-2bcf1ab5e3cd)
+
+
 ## Components
 
 1. **Apex Class**: `WorldBankAPIService`
