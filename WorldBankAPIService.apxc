@@ -1,0 +1,82 @@
+public class WorldBankAPIService {
+    private static final String BASE_URL = 'https://api.worldbank.org/v2/';
+    
+    @AuraEnabled
+    public static List<CountryEconomicData> getEconomicData(List<String> countryCodes) {
+        List<CountryEconomicData> dataList = new List<CountryEconomicData>();
+        String[] indicatorCodes = new String[]{'NY.GDP.MKTP.CD', 'SL.UEM.TOTL.ZS', 'FP.CPI.TOTL.ZG', 'SP.POP.TOTL'};
+        
+        for (String countryCode : countryCodes) {
+            CountryEconomicData countryData = new CountryEconomicData();
+            countryData.countryCode = countryCode;
+            System.debug('Fetching data for country: ' + countryCode);
+            
+            for (String code : indicatorCodes) {
+                Decimal value = fetchData(countryCode, code, '2022');
+                System.debug('Indicator ID: ' + code + ', Value: ' + value);
+                
+                if (code == 'NY.GDP.MKTP.CD') {
+                    countryData.gdp = value;
+                } else if (code == 'SL.UEM.TOTL.ZS') {
+                    countryData.unemploymentRate = value != null ? value / 100 : null;
+                } else if (code == 'FP.CPI.TOTL.ZG') {
+                    countryData.inflationRate = value != null ? value / 100 : null;
+                } else if (code == 'SP.POP.TOTL') {
+                    countryData.population = value;
+                }
+            }
+            dataList.add(countryData);
+        }
+        System.debug('Final data list: ' + dataList);
+        return dataList;
+    }
+    
+    private static Decimal fetchData(String countryCode, String indicatorCode, String year) {
+        HttpRequest req = new HttpRequest();
+        String endpoint = BASE_URL + 'country/' + countryCode + '/indicator/' + indicatorCode + '?format=json&per_page=1&date=' + year;
+        req.setEndpoint(endpoint);
+        req.setMethod('GET');
+        
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        if (res.getStatusCode() == 200) {
+            String responseBody = res.getBody();
+            System.debug('API Response for indicator ' + indicatorCode + ': ' + responseBody);
+            
+            List<Object> response = (List<Object>) JSON.deserializeUntyped(responseBody);
+            System.debug('Deserialized Response for indicator ' + indicatorCode + ': ' + response);
+            
+            if (response.size() > 1) {
+                List<Object> dataListResponse = (List<Object>) response[1];
+                if (dataListResponse.size() > 0) {
+                    Map<String, Object> data = (Map<String, Object>) dataListResponse[0];
+                    Object valueObj = data.get('value');
+                    if (valueObj != null) {
+                        try {
+                            return Decimal.valueOf(valueObj.toString());
+                        } catch (Exception e) {
+                            System.debug('Failed to parse value for ' + indicatorCode + ': ' + valueObj);
+                        }
+                    }
+                }
+            }
+        } else {
+            System.debug('Failed to fetch data for indicator ' + indicatorCode + ': ' + res.getStatus());
+        }
+        return null;
+    }
+
+    public class CountryEconomicData {
+        @AuraEnabled
+        public String countryCode { get; set; }
+        @AuraEnabled
+        public Decimal gdp { get; set; }
+        @AuraEnabled
+        public Decimal unemploymentRate { get; set; }
+        @AuraEnabled
+        public Decimal inflationRate { get; set; }
+        @AuraEnabled
+        public Decimal population { get; set; }
+    }
+}
