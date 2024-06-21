@@ -22,7 +22,7 @@ The Apex class `WorldBankAPIService` is responsible for fetching economic data f
 
 - **`CountryEconomicData`**: Represents the economic data for a country, including GDP, unemployment rate, inflation rate, and population.
 
-### Example Code
+### Code
 
 ```java
 public class WorldBankAPIService {
