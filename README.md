@@ -36,9 +36,11 @@ public class WorldBankAPIService {
         for (String countryCode : countryCodes) {
             CountryEconomicData countryData = new CountryEconomicData();
             countryData.countryCode = countryCode;
+            System.debug('Fetching data for country: ' + countryCode);
             
             for (String code : indicatorCodes) {
                 Decimal value = fetchData(countryCode, code, '2022');
+                System.debug('Indicator ID: ' + code + ', Value: ' + value);
                 
                 if (code == 'NY.GDP.MKTP.CD') {
                     countryData.gdp = value;
@@ -52,6 +54,7 @@ public class WorldBankAPIService {
             }
             dataList.add(countryData);
         }
+        System.debug('Final data list: ' + dataList);
         return dataList;
     }
     
@@ -66,7 +69,10 @@ public class WorldBankAPIService {
         
         if (res.getStatusCode() == 200) {
             String responseBody = res.getBody();
+            System.debug('API Response for indicator ' + indicatorCode + ': ' + responseBody);
+            
             List<Object> response = (List<Object>) JSON.deserializeUntyped(responseBody);
+            System.debug('Deserialized Response for indicator ' + indicatorCode + ': ' + response);
             
             if (response.size() > 1) {
                 List<Object> dataListResponse = (List<Object>) response[1];
