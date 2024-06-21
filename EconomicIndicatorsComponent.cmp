@@ -1,0 +1,15 @@
+<aura:component controller="WorldBankAPIService" implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
+    <aura:attribute name="countryCodes" type="List" default="['USA', 'CHN', 'IND', 'BRA', 'DEU', 'FRA', 'JPN', 'CAN', 'AUS', 'ZAF', 'ITA', 'MEX', 'KOR']"/>
+    <aura:attribute name="indicators" type="List"/>
+    <aura:attribute name="columns" type="List" default="[
+        {label: 'Country Code', fieldName: 'countryCode', type: 'text'},
+        {label: 'GDP', fieldName: 'gdp', type: 'currency'},
+        {label: 'Unemployment Rate', fieldName: 'unemploymentRate', type: 'percent'},
+        {label: 'Inflation Rate', fieldName: 'inflationRate', type: 'percent'},
+        {label: 'Population', fieldName: 'population', type: 'number'}                                            
+    ]"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <lightning:datatable data="{!v.indicators}" columns="{!v.columns}" keyField="countryCode"/>
+</aura:component>
