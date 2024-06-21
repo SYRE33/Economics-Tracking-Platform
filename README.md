@@ -1,21 +1,30 @@
-World Bank Economic Data Lightning Component
+
+# World Bank Economic Data Lightning Component
+
 This Salesforce Lightning component fetches and displays economic data for multiple countries using the World Bank API. The data includes GDP, unemployment rate, inflation rate, and population for each country.
 
-Components
-Apex Class: WorldBankAPIService
-Lightning Component: economicData.cmp
-Lightning Component Controller: economicDataController.js
-Apex Class: WorldBankAPIService
-The Apex class WorldBankAPIService is responsible for fetching economic data from the World Bank API.
+## Components
 
-Methods
-getEconomicData(List<String> countryCodes): Fetches economic data for the provided list of country codes.
-fetchData(String countryCode, String indicatorCode, String year): Helper method to fetch data for a specific indicator.
-Inner Class
-CountryEconomicData: Represents the economic data for a country, including GDP, unemployment rate, inflation rate, and population.
-Example Code
-java
-Copy code
+1. **Apex Class**: `WorldBankAPIService`
+2. **Lightning Component**: `economicData.cmp`
+3. **Lightning Component Controller**: `economicDataController.js`
+
+## Apex Class: WorldBankAPIService
+
+The Apex class `WorldBankAPIService` is responsible for fetching economic data from the World Bank API.
+
+### Methods
+
+- **`getEconomicData(List<String> countryCodes)`**: Fetches economic data for the provided list of country codes.
+- **`fetchData(String countryCode, String indicatorCode, String year)`**: Helper method to fetch data for a specific indicator.
+
+### Inner Class
+
+- **`CountryEconomicData`**: Represents the economic data for a country, including GDP, unemployment rate, inflation rate, and population.
+
+### Example Code
+
+```java
 public class WorldBankAPIService {
     private static final String BASE_URL = 'https://api.worldbank.org/v2/';
     
@@ -92,12 +101,15 @@ public class WorldBankAPIService {
         public Decimal population { get; set; }
     }
 }
-Lightning Component: economicData.cmp
-The Lightning component economicData.cmp displays the economic data in a table.
+```
 
-Markup
-xml
-Copy code
+## Lightning Component: economicData.cmp
+
+The Lightning component `economicData.cmp` displays the economic data in a table.
+
+### Markup
+
+```xml
 <aura:component controller="WorldBankAPIService" implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
     <aura:attribute name="countryCodes" type="List" default="['USA', 'CHN', 'IND', 'BRA', 'DEU', 'FRA', 'JPN', 'CAN', 'AUS', 'ZAF', 'ITA', 'MEX', 'KOR']"/>
     <aura:attribute name="indicators" type="List"/>
@@ -113,12 +125,15 @@ Copy code
 
     <lightning:datatable data="{!v.indicators}" columns="{!v.columns}" keyField="countryCode"/>
 </aura:component>
-Lightning Component Controller: economicDataController.js
+```
+
+## Lightning Component Controller: economicDataController.js
+
 The JavaScript controller handles the initialization and data fetching.
 
-Controller Code
-javascript
-Copy code
+### Controller Code
+
+```javascript
 ({
     doInit: function(component, event, helper) {
         var action = component.get("c.getEconomicData");
@@ -136,47 +151,52 @@ Copy code
         $A.enqueueAction(action);
     }
 })
-Setup Instructions
-Set Up Named Credentials:
+```
 
-Go to Setup in Salesforce.
-Search for Named Credentials and create a new Named Credential for the World Bank API.
-Label: WorldBankAPI
-Name: WorldBankAPI
-URL: https://api.worldbank.org/v2
-Identity Type: Anonymous
-Authentication Protocol: No Authentication
-Save the Named Credential.
-Create the Apex Class:
+## Setup Instructions
 
-Go to Setup in Salesforce.
-Search for Apex Classes.
-Click on New and paste the WorldBankAPIService Apex class code.
-Save the class.
-Create the Lightning Component:
+1. **Set Up Named Credentials**:
+   - Go to **Setup** in Salesforce.
+   - Search for **Named Credentials** and create a new Named Credential for the World Bank API.
+   - Label: `WorldBankAPI`
+   - Name: `WorldBankAPI`
+   - URL: `https://api.worldbank.org/v2`
+   - Identity Type: Anonymous
+   - Authentication Protocol: No Authentication
+   - Save the Named Credential.
 
-Go to Developer Console in Salesforce.
-Click on File > New > Lightning Component.
-Name the component economicData.
-Paste the economicData.cmp markup code.
-Save the component.
-Create the Lightning Component Controller:
+2. **Create the Apex Class**:
+   - Go to **Setup** in Salesforce.
+   - Search for **Apex Classes**.
+   - Click on **New** and paste the `WorldBankAPIService` Apex class code.
+   - Save the class.
 
-In the Developer Console, open the Controller tab for your economicData component.
-Paste the economicDataController.js code.
-Save the controller.
-Add the Component to a Lightning Page:
+3. **Create the Lightning Component**:
+   - Go to **Developer Console** in Salesforce.
+   - Click on **File** > **New** > **Lightning Component**.
+   - Name the component `economicData`.
+   - Paste the `economicData.cmp` markup code.
+   - Save the component.
 
-Go to Setup in Salesforce.
-Navigate to App Builder.
-Create a new Lightning Page or edit an existing one.
-Drag and drop the economicData component onto the page.
-Save and activate the page.
-View the Component:
+4. **Create the Lightning Component Controller**:
+   - In the Developer Console, open the `Controller` tab for your `economicData` component.
+   - Paste the `economicDataController.js` code.
+   - Save the controller.
 
-Navigate to the Lightning page where you added the component.
-The component will display the economic data for the specified countries.
-Usage
-The component fetches economic data for the predefined list of country codes.
-The data is displayed in a table format, with columns for country code, GDP, unemployment rate, inflation rate, and population.
-The component automatically fetches and displays the data when the page is loaded.
+5. **Add the Component to a Lightning Page**:
+   - Go to **Setup** in Salesforce.
+   - Navigate to **App Builder**.
+   - Create a new Lightning Page or edit an existing one.
+   - Drag and drop the `economicData` component onto the page.
+   - Save and activate the page.
+
+6. **View the Component**:
+   - Navigate to the Lightning page where you added the component.
+   - The component will display the economic data for the specified countries.
+
+## Usage
+
+- The component fetches economic data for the predefined list of country codes.
+- The data is displayed in a table format, with columns for country code, GDP, unemployment rate, inflation rate, and population.
+- The component automatically fetches and displays the data when the page is loaded.
+
